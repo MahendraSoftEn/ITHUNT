@@ -28,8 +28,13 @@ function LoginScreen() {
         navigation.navigate("DashBoard");
     }
     const _storeData = async () => {
+        const obj={
+            "username":userName,
+            "password":password
+        }
         try {
-            await AsyncStorage.setItem("username",userName);
+            const json=JSON.stringify(obj);
+            await AsyncStorage.setItem("login",json);
         } catch (error) {
           // Error saving data
         }
