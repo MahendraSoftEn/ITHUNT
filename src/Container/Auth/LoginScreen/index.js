@@ -105,6 +105,7 @@ function LoginScreen() {
                        </TouchableOpacity>
                     </View>
                     </ScrollView>
+                    <Text>Hello</Text>
                 </ImageBackground>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
