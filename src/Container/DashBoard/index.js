@@ -1,13 +1,44 @@
 import React, { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { View, Text,StyleSheet,Image, ImageBackground, TouchableOpacity, ScrollView} from 'react-native'
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {widthPercentageToDP as wpx, heightPercentageToDP as hpx} from 'react-native-responsive-screen';
+import { View, Text,StyleSheet,Image, ImageBackground, TouchableOpacity, ScrollView, FlatList} from 'react-native'
+
 
 function DashBoard() {
 
+  const navigation=useNavigation();
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const navigation=useNavigation();
+
+  const teacherList=[
+
+    {
+      name:"Anoop",
+      designation:"Software Engineer",
+      teacherImage:require('../../../assets/DashBoard/mathTeacher.jpg')
+    },
+    {
+      name:"Mahendra",
+      designation:"Software Engineer",
+      teacherImage:require('../../../assets/DashBoard/scienceTeacher.jpg')
+    },
+    {
+      name:"Sumit",
+      designation:"Software Engineer",
+      teacherImage:require('../../../assets/DashBoard/childTeacher.jpg')
+    },
+    {
+      name:"Adarsh",
+      designation:"Software Engineer",
+      teacherImage:require('../../../assets/DashBoard/scienceTeacher.jpg')
+    },
+    {
+      name:"Varsha",
+      designation:"Software Engineer",
+      teacherImage:require('../../../assets/DashBoard/mathTeacher.jpg')
+    }
+  ]
 
   useEffect(() => {
     _retrieveData();
@@ -31,6 +62,20 @@ function DashBoard() {
     }
   };
    // get Login data End
+
+   //render teacherList
+
+   const renderTeacherList=(item)=>{
+
+    return(
+     
+      <Image
+       source={item.teacherImage}
+       style={{width:wpx(45),height:hpx(50),resizeMode:'contain',marginLeft:10}}
+      />
+    
+    )
+   }
   return (
     <View style={DashBoardStyle.DashBoradContainer}>
       
@@ -62,8 +107,26 @@ function DashBoard() {
       </ImageBackground>
      <ScrollView contentContainerStyle={DashBoardStyle.mainContainer}>
 
+       <ImageBackground
+         source={require('../../../assets/DashBoard/study.jpg')}
+         style={{width:wpx("100%"),height:hpx(40),borderRadius:20,marginHorizontal:10}}
        
-        <TouchableOpacity style={DashBoardStyle.cardContainer}>
+       
+       />
+       <View style={{}}>
+        <Text>Teacher List</Text>
+
+        <FlatList 
+         horizontal
+         style={{marginTop:-30}}
+          data={teacherList}
+          renderItem={({item,index})=>
+           renderTeacherList(item)
+          }
+         
+        />
+       </View>
+        {/* <TouchableOpacity style={DashBoardStyle.cardContainer}>
             <View style={{}}>
               <Image
                source={require('../../../assets/LoginScreen/Homework.png')}
@@ -139,7 +202,7 @@ function DashBoard() {
             <View style={{marginTop:10,marginRight:10}}>
               <Text style={{fontSize:22,color:"#194880"}}>Today Class Topic</Text>
             </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
      
      </ScrollView>
      
@@ -149,14 +212,14 @@ function DashBoard() {
 
 const DashBoardStyle=StyleSheet.create({
   DashBoardheaderView:{
-     backgroundColor:"#194880",
-     height:120,
+    //  backgroundColor:"#194880",
+     height:hpx('20%'),
+     width:wpx('100%'),
      justifyContent:"space-between",
-     paddingHorizontal:10,
-     borderBottomLeftRadius:15,
-     borderBottomRightRadius:15,
      paddingTop:30,
      flexDirection:"row",
+     paddingHorizontal:10,
+     
      
   },
   sideBarImage:{
@@ -171,10 +234,11 @@ const DashBoardStyle=StyleSheet.create({
   mainContainer:{
     backgroundColor:"#F1F9FF",
     // flex:1,
-    borderTopLeftRadius:15,
-    marginTop:-14,
-    borderTopRightRadius:15,
-    alignItems:"center"
+    
+    marginTop:2,
+    marginRight:10,
+    
+    // alignItems:"center",
   },
   cardContainer:{
     width:340,
