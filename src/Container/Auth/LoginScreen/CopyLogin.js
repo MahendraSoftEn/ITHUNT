@@ -11,6 +11,8 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
+    Dimensions,
+    SafeAreaView,
 } from 'react-native';
 
 
@@ -19,55 +21,75 @@ import { useNavigation } from "@react-navigation/native";
 import { Formik } from "formik";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { loginValidationSchema } from "../../../../utilities/Validation";
+import { setLoginData } from "../../../../utilities/MyStore/ReduxSlice";
+import { useDispatch } from "react-redux";
 
-function LoginScreen() {
+const screenWidth=Dimensions.get("window").width;
+const screenHeight=Dimensions.get("window").height;
+function CopyLogin() {
 
     const navigation = useNavigation();
     const [password, setPassword] = useState("");
     const [userName, setUserName] = useState("");
     const [showhidePassword, setshowhidePassword] = useState(true);
+    const dispatch=useDispatch();
 
-
-    const goToDashBoard = async () => {
-        _storeData();
-        navigation.navigate("DashBoard");
+    const goToDashBoard = (values) => {
+        _storeData(values);
+       
     }
-    const _storeData = async () => {
+    const _storeData =  (values) => {
         const obj = {
-            "username": userName,
-            "password": password
+            "username": values.username,
+            "password": values.password
         }
-        try {
-            const json = JSON.stringify(obj);
-            await AsyncStorage.setItem("login", json);
-        } catch (error) {
-            // Error saving data
-        }
+        dispatch(setLoginData(obj));
+        navigation.navigate("DashBoard",{
+            item:values
+        });
+
+        console.log("values===>",values)
+        // try {
+        //     const json = JSON.stringify(obj);
+        //     await AsyncStorage.setItem("login", json);
+        // } catch (error) {
+        //     // Error saving data
+        // }
     };
 
     const handleButtonClick=(values)=>{
-
-    goToDashBoard();
-
+        goToDashBoard(values);
     }
+
     return (
 
-        <KeyboardAvoidingView style={Styles.container}>
+        <SafeAreaView style={Styles.container}>
+        <KeyboardAvoidingView>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <ImageBackground
-                    source={Images.Login_Screen}
-                    style={Styles.BackgroundLoginImage}>
-                    <Image
-                        source={Images.Login_Header}
-                        style={Styles.headerImage}
-                    />
-                    <ScrollView>
-                        <View style={{ alignSelf: "center", marginTop: 20 }}>
-                            <Image
-                                source={Images.Login_Logo}
-                                style={Styles.loginLogo}
-                            />
+                <ScrollView>
+                    <View style={[Styles.header]}>
+                           <Text style={[Styles.headerContent]}>Enter your valid Credential for access the mobile app and explore its feature</Text>
+                    </View>
+                   
+                    <View 
+                    style={[Styles.LoginScreenContainer]}
+                   
+                    >
+                        <View style={{alignItems:"center",marginTop:20}}>
+                                <Image
+                                    source={Images.Login_Logo}
+                                    style={Styles.loginLogo}
+                                />
+                                <View style={{marginTop:10}}>
+                                   <Text style={{fontSize:16}}>IT HUNT</Text>
+                                </View>
+                                <View style={{alignItems:"center",marginTop:20}}>
+                                    <Text style={{fontSize:20}}>Welcome</Text>
+                                    <Text style={{color:"#194880",marginTop:10}}>Please Enter Your Details</Text>
+                                </View>
+                               
                         </View>
+                       
                         <Formik
                             initialValues={{ username: '', password: '' }}
                             onSubmit={values => handleButtonClick(values)}
@@ -119,7 +141,7 @@ function LoginScreen() {
                                         >
                                             <Image
                                                 source={showhidePassword ? Images.Password_Show : Images.Password_Hide}
-                                                style={{ width: 20, height: 20, alignSelf: "flex-end", top: -30, right: 16, }}
+                                                style={{ width: 20, height: 20, alignSelf: "flex-end", top: -45, right: 16, }}
                                             />
                                         </TouchableOpacity>
                                     </View>
@@ -131,23 +153,61 @@ function LoginScreen() {
                                 </View>
                             )}
                         </Formik>
-
+                       <View style={{alignItems:"center"}}>
+                        <Text style={[Styles.textStyle]}>or Login With</Text>
+                       </View>
+                       <View style={{flexDirection:"row",alignSelf:"center",marginTop:20}}>
+                        <TouchableOpacity>
+                            <Image
+                             source={Images.Google_Icon}
+                             style={{width:40,height:40}}
+                            />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{marginLeft:30}}>
+                            <Image
+                             source={Images.Microsoft_Icon}
+                             style={{width:38,height:38}}
+                            />
+                        </TouchableOpacity>
+                       </View>
+                    </View>
                     </ScrollView>
-                </ImageBackground>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
+        </SafeAreaView>
 
     )
 }
-export default LoginScreen;
+export default CopyLogin;
 
 const Styles = StyleSheet.create({
 
+    header:{
+        height:100,
+        backgroundColor:"#194880",
+        justifyContent:"center",
+        alignItems:"center"
+    },
+    headerContent:{
+        fontSize:15,
+        color:"white",
+        opacity:0.8
+    },
     container: {
         flex: 1,
+        backgroundColor:'white'
     },
     BackgroundLoginImage: {
-        height: "100%"
+    //    flex:1
+    },
+    LoginScreenContainer:{
+        // flex:1,
+        backgroundColor:"white",
+        // position:'relative',
+        // top:160,
+        // zIndex:10,
+        borderTopLeftRadius:40,
+        borderTopEndRadius:40
     },
     inputBox: {
         width: 280,
@@ -162,15 +222,25 @@ const Styles = StyleSheet.create({
         fontSize: 16
     },
     headerImage: {
-        height: 110,
+        // flex:5,
+        height:200,
         width: "100%",
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20
+        zIndex:0,
+        position:'absolute',
+        
+
+        // borderBottomLeftRadius: 20,
+        // borderBottomRightRadius: 20
     },
     loginLogo: {
         width: 115,
         height: 115,
-        borderRadius: 40
+        borderRadius: 60,
+        borderWidth:0.7,
+        borderColor:"#8C8896",
+        resizeMode:"contain"
+
+        
     },
     inputView: {
         alignSelf: "center",
@@ -179,19 +249,22 @@ const Styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 20,
         borderRadius: 10,
-        marginTop: 20,
+        // marginTop: 0,
     },
     loginButton: {
-        paddingHorizontal: 30,
+        
         paddingVertical: 10,
         backgroundColor: "#00B2F4",
         marginTop: 20,
         alignSelf: 'center',
-        borderRadius: 10
+        borderRadius: 10,
+        elevation:4,
+        width:140,
+        alignItems:"center"
     },
     loginText: {
         color: "white",
-        fontSize: 16
+        fontSize: 17
     },
     passwordView: {
         position: 'absolute',
@@ -205,5 +278,9 @@ const Styles = StyleSheet.create({
         left: 30,
         top: 50,
         backgroundColor: "white",
+    },
+    textStyle:{
+        fontSize:16,
+        color:"#194880"
     }
 })
