@@ -52,7 +52,7 @@ function TeachingStaff(props) {
   )
 }
 
-function DashBoard(props) {
+function DashBoard() {
 
 
   const navigation = useNavigation();
@@ -156,6 +156,18 @@ function DashBoard(props) {
         <Text style={{fontSize:24,color:COLORS.SECONDARY}}>Teacher Staff</Text>
        </View>
          <HorizontalImageList />
+         <TouchableOpacity
+         onPress={()=>{
+             navigation.navigate("RegisterStudent");
+         }}
+          style={{marginTop:20,padding:10,alignItems:"center"}}
+          >
+           <Image
+             source={require('../../../assets/DashBoard/userIcon.png')}
+             style={{width:40,height:40}}
+           />
+           <Text>Student Registration</Text>
+         </TouchableOpacity>
       </View>
     </View>
   )
